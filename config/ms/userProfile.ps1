@@ -1,6 +1,6 @@
 # Prompt
-Import-Module posh-git
 Import-Module Terminal-Icons
+$env:POSH_GIT_ENABLED = $ture
 
 ## Themes
 # oh-my-posh init pwsh --config $env:POSH_THEMES_PATH\fish.omp.json | Invoke-Expression
