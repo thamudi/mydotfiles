@@ -1,11 +1,13 @@
 # Prompt
 Import-Module Terminal-Icons
-$env:POSH_GIT_ENABLED = $ture
+# $env:POSH_GIT_ENABLED = "$ture"
+Import-Module posh-git
 
 ## Themes
 # oh-my-posh init pwsh --config $env:POSH_THEMES_PATH\fish.omp.json | Invoke-Expression
 # oh-my-posh init pwsh --config $env:POSH_THEMES_PATH\agnoster.minimal.omp.json | Invoke-Expression
-oh-my-posh init pwsh --config $env:POSH_THEMES_PATH\takuya.omp.json | Invoke-Expression
+oh-my-posh init pwsh --config $env:USERPROFILE\.config\powershell\takuya.omp.json | Invoke-Expression
+# oh-my-posh init pwsh | Invoke-Expression
 
 # Icons
 Import-Module Terminal-Icons
@@ -14,8 +16,6 @@ Import-Module Terminal-Icons
 Set-PSReadLineOption -PredictionSource History
 Set-PSReadLineOption -PredictionViewStyle ListView
 
-# Fzf
-Set-PSFzfOption -PSReadlineChordProvider 'Ctrl+f' -PSReadlineChordReverseHistory 'Ctrl+r'
 
 ## Utilities
 <#
@@ -69,10 +69,10 @@ function which($command) {
   Get-Command -Name $command -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Path -ErrorAction SilentlyContinue
 }
 
-function Touch-File {
+function Touch {
   param ([Parameter()] [String]$file)
   if (Test-Path -Path $file) {
-    #It exists. Update the timestamp
+    #It exists. Update the  stamp
     (Get-ChildItem -Path $file).LastWriteTime = Get-Date
   }
   else {
@@ -81,12 +81,29 @@ function Touch-File {
   }
 }
 
+function Get-Daytime {
+  $currentTime = Get-Date -UFormat %R
+
+  $hour = [int]$currentTime.Substring(0, 2)
+
+  if ($hour -eq 13) {
+    Write-Host "Its feeding time! 🍽️"
+  }
+  elseif (($hour -ge 6) && ($hour -lt 13 || $hour -ge 14)) {
+    Write-Host "Its morning or noon time!"
+  }
+  elseif ($hour -gt 17) {
+    Write-Host "Its night time 🌚"
+  }
+
+}
+
 
 # Alias 
 Set-Alias l ls
 # Set-Alias -Name ll -Value "ls -Force"
 Set-Alias vim nvim
-Set-Alias -Name touch -Value Touch-File
+# Set-Alias -Name touchey -Value Touch
 Set-Alias grep findstr
 Set-Alias tig 'C:\Program Files\Git\usr\bin\tig.exe'
 Set-Alias less 'C:\Program Files\Git\usr\bin\less.exe'
@@ -95,3 +112,13 @@ Set-Alias -Name swp -Value Show-Wifi-Password
 Set-Alias -Name csc -Value 'C:\Windows\Microsoft.NET\Framework\v4.0.30319\csc.exe'
 Set-Alias -Name cat -Value bat
 Set-Alias -Name less -Value bat
+Set-Alias -Name cz -Value "C:\Users\thamudi\AppData\Roaming\Python\Python310\site-packages\commitizen\cz\base.py"
+
+Set-Alias getdaytime -Value Get-Daytime
+
+
+# $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddSeconds(15)
+# $action = New-ScheduledTaskAction -Execute "pwd"
+# Register-ScheduledTask 'Time of the day' -Action $action -Trigger $trigger
+
+# Get-ScheduledTask
